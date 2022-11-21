@@ -1,0 +1,70 @@
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+body {
+  min-height: 100%;
+  font-size: 1.5rem;
+}
+header {
+  color: white;
+  font-size: 2rem;
+  padding: 3rem;
+  background-color: #59c1bd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+h1 {
+  text-shadow: 2px 2px 0px #0d4c92;
+}
+#todo-input {
+  all: unset;
+  background-color: white;
+  width: 200px;
+  height: 2rem;
+  border-radius: 5px;
+  padding-left: 0.5em;
+}
+button {
+  all: unset;
+  color: white;
+  background-color: #0d4c92;
+  margin-left: 0.5rem;
+  height: 2rem;
+  border-radius: 5px;
+  padding: 0px 5px 0px 5px;
+  box-shadow: 2px 2px 0px #59c1bd;
+  cursor: pointer;
+}
+main {
+  background-color: #cff5e7;
+  display: flex;
+  justify-content: center;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 3rem 3rem 5rem 3rem;
+}
+h2 {
+  font-size: 2.5rem;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+.checkb {
+  margin-right: 1em;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+#todos-list {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+ul {
+  list-style: none;
+}
