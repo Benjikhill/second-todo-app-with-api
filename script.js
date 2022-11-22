@@ -8,17 +8,20 @@ const openCheckbox = document.querySelector("#open");
 const doneCheckbox = document.querySelector("#done");
 
 let todos = [];
-// Ladet die daten aus dem API
+
+// Lädt die daten aus dem API
+
 function loadTodos() {
   fetch("http://localhost:4730/todos")
     .then((res) => res.json())
     .then((todosFromApi) => {
-      console.log(todosFromApi);
       todos = todosFromApi;
       renderTodos();
     });
 }
+
 // setzt die Daten auf "" und erzeugt ein neues Element
+
 function renderTodos() {
   todoList.innerHTML = "";
   todos.forEach((todo) => {
@@ -31,8 +34,34 @@ function renderTodos() {
     const text = document.createTextNode(todo.description);
     newLi.appendChild(text);
     todoList.appendChild(newLi);
+
+    // updatet die todos im backend
+
+    if (todo.done === true) {
+      checkBox.checked = true;
+    }
+
+    checkBox.addEventListener("change", (event) => {
+      todo.done = event.target.checked;
+      //console.log(todo.done);
+      console.log(todo);
+      let updateTodo = todo;
+      let id = todo.id;
+
+      fetch("http://localhost:4730/todos/" + id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateTodo),
+      })
+        .then((res) => res.json())
+        .then(() => {});
+    });
   });
 }
+
+// fügt ein neues Todo hinzu
 
 addButton.addEventListener("click", () => {
   const newTodoText = todoInput.value;
@@ -58,6 +87,79 @@ addButton.addEventListener("click", () => {
     });
 });
 
+// löscht die erledigten todos
+
+// function deleteBtn(e) {
+//   for (let li of todoList.children) {
+//     console.log(getId);
+//     console.log(todoList.children);
+//     if (li.querySelector("input").checked === true) {
+//       console.log(li.querySelector("input").checked);
+
+//       let getId = todo.id;
+//       // console.log(li);
+//       fetch("http://localhost:4730/todos/" + getId, {
+//         method: "DELETE",
+//       })
+//         .then((res) => res.json())
+//         .then(() => {});
+//     }
+//   }
+//   renderTodos();
+// }
+
+// deleteButton.addEventListener("change", (event) => {
+//   todo.id = event.target.checked;
+//   //console.log(todo.done);
+//   console.log(todo);
+//   let updateTodo = todo;
+//   let id = todo.id;
+
+//   fetch("http://localhost:4730/todos/" + id, {
+//     method: "DELETE",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(updateTodo),
+//   })
+//     .then((res) => res.json())
+//     .then(() => {});
+// });
+
+function deleteBtn() {
+  //alle todos die Done sind sollen gelöscht werden
+  //auf die todos zugreifen und dann herausfinden ob sie Done sind oder nicht
+
+  const todosWithDone = [];
+
+  todos.forEach((todo) => {
+    if (todo.done === true) {
+      todosWithDone.push(todo);
+    }
+  });
+
+  const deletePromises = [];
+
+  for (let todo of todosWithDone) {
+    deletePromises.push(
+      fetch("http://localhost:4730/todos/" + todo.id, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    );
+  }
+
+  Promise.all(deletePromises).then(() => {
+    loadTodos();
+  });
+}
+
+deleteButton.addEventListener("click", deleteBtn);
+
+// filtert die Optionen
+
 function filterTodos(status = "open") {
   for (let li of todoList.children) {
     let condition = li.querySelector("input").checked;
@@ -71,19 +173,6 @@ function filterTodos(status = "open") {
     } else {
       li.hidden = false;
     }
-
-    fetch("http://localhost:4730/todos", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(condition),
-    })
-      .then((res) => res.json())
-      .then((newTodoFromApi) => {
-        todos.push(newTodoFromApi);
-        renderTodos();
-      });
   }
 }
 
